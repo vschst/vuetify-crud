@@ -19,6 +19,7 @@
           </v-icon>
           Создать новый товар
         </v-btn>
+        <add-item-dialog />
       </v-toolbar>
     </template>
     <template v-slot:item.actions="{ item }">
@@ -41,9 +42,13 @@
 
 <script>
   import { mapState, mapActions } from 'vuex'
+  import AddItemDialog from "./Dialogs/AddItem";
 
   export default {
     name: 'TableContent',
+    components: {
+      AddItemDialog
+    },
     data() {
       return {
         headers: [
@@ -92,10 +97,11 @@
     },
     methods: {
       ...mapActions({
-        setData: 'table/setData'
+        setData: 'table/setData',
+        setDialogAddItem: 'dialogs/setAdd'
       }),
       addItem() {
-        //  todo: open adding item dialog
+        this.setDialogAddItem(true)
       },
       editItem(item) {
         console.log(item)
