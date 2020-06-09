@@ -23,7 +23,7 @@ const mutations = {
     [SET_TABLE_DATA](state, value) {
         state.data = value
     },
-    [ADD_TABLE_ITEM](value) {
+    [ADD_TABLE_ITEM](state, value) {
         state.data.push(value)
     }
 }

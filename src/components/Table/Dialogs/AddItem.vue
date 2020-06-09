@@ -2,6 +2,7 @@
   <v-dialog
     v-model="dialog"
     max-width="500px"
+    @click:outside="close"
   >
     <v-card>
       <v-card-title>
@@ -9,78 +10,105 @@
       </v-card-title>
       <v-card-text>
         <v-container>
-          <v-row>
-            <v-col
-              cols="12"
-              sm="6"
-              md="4"
-            >
-              <v-text-field
-                v-model="artnumber"
-                label="Артикул"
-              />
-            </v-col>
-            <v-col
-              cols="12"
-              sm="6"
-              md="4"
-            >
-              <v-text-field
-                v-model="name"
-                label="Название товара"
-              />
-            </v-col>
-            <v-col
-              cols="12"
-              sm="6"
-              md="4"
-            >
-              <v-text-field
-                v-model="brand"
-                label="Бренд"
-              />
-            </v-col>
-            <v-col
-              cols="12"
-              sm="6"
-              md="4"
-            >
-              <v-text-field
-                v-model="weight"
-                label="Вес"
-              />
-            </v-col>
-            <v-col
-              cols="12"
-              sm="6"
-              md="4"
-            >
-              <v-text-field
-                v-model="quantity"
-                label="Фасовка"
-              />
-            </v-col>
-            <v-col
-              cols="12"
-              sm="6"
-              md="4"
-            >
-              <v-text-field
-                v-model="price"
-                label="Цена"
-              />
-            </v-col>
-            <v-col
-              cols="12"
-              sm="6"
-              md="4"
-            >
-              <v-text-field
-                v-model="stock"
-                label="Наличие"
-              />
-            </v-col>
-          </v-row>
+          <v-form
+            ref="form"
+            v-model="valid"
+            lazy-validation
+          >
+            <v-row>
+              <v-col
+                cols="12"
+                sm="6"
+                md="4"
+              >
+                <v-text-field
+                  v-model="artnumber"
+                  label="Артикул"
+                  :rules="artnumberRules"
+                  required
+                  @input="resetValidation"
+                />
+              </v-col>
+              <v-col
+                cols="12"
+                sm="6"
+                md="4"
+              >
+                <v-text-field
+                  v-model="name"
+                  label="Название товара"
+                  :rules="nameRules"
+                  required
+                  @input="resetValidation"
+                />
+              </v-col>
+              <v-col
+                cols="12"
+                sm="6"
+                md="4"
+              >
+                <v-text-field
+                  v-model="brand"
+                  label="Бренд"
+                  :rules="brandRules"
+                  required
+                  @input="resetValidation"
+                />
+              </v-col>
+              <v-col
+                cols="12"
+                sm="6"
+                md="4"
+              >
+                <v-text-field
+                  v-model="weight"
+                  label="Вес"
+                  :rules="weightRules"
+                  required
+                  @input="resetValidation"
+                />
+              </v-col>
+              <v-col
+                cols="12"
+                sm="6"
+                md="4"
+              >
+                <v-text-field
+                  v-model="quantity"
+                  label="Фасовка"
+                  :rules="quantityRules"
+                  required
+                  @input="resetValidation"
+                />
+              </v-col>
+              <v-col
+                cols="12"
+                sm="6"
+                md="4"
+              >
+                <v-text-field
+                  v-model="price"
+                  label="Цена"
+                  :rules="priceRules"
+                  required
+                  @input="resetValidation"
+                />
+              </v-col>
+              <v-col
+                cols="12"
+                sm="6"
+                md="4"
+              >
+                <v-text-field
+                  v-model="stock"
+                  label="Наличие"
+                  :rules="stockRules"
+                  required
+                  @input="resetValidation"
+                />
+              </v-col>
+            </v-row>
+          </v-form>
         </v-container>
       </v-card-text>
       <v-card-actions>
@@ -112,13 +140,43 @@
         name: 'AddItemDialog',
         data() {
             return {
+                valid: true,
                 artnumber: '',
+                artnumberRules: [
+                    v => !!v || 'Введите артикул',
+                    v => !isNaN(v) || 'Артикул должен быть числом'
+                ],
                 name: '',
+                nameRules: [
+                    v => !!v || 'Введите название',
+                ],
                 brand: '',
+                brandRules: [
+                    v => !!v || 'Введите бренд',
+                ],
                 weight: '',
+                weightRules: [
+                    v => !!v || 'Введите вес',
+                    v => !isNaN(v) || 'Вес должен быть числом',
+                    v => (v > 0) || 'Вес должен быть положительным'
+                ],
                 quantity: '',
+                quantityRules: [
+                    v => !!v || 'Укажите фасовку',
+                    v => !isNaN(v) || 'Фасовка должна быть числом',
+                    v => (v > 0) || 'Фасовка должна быть положительной'
+                ],
                 price: '',
-                stock: ''
+                priceRules: [
+                    v => !!v || 'Введите цену',
+                    v => !isNaN(v) || 'Цена должна быть числом',
+                    v => (v > 0) || 'Цена должна быть положительной'
+                ],
+                stock: '',
+                stockRules: [
+                    v => !!v || 'Укажите наличие',
+                    v => (v === '0' || v === '1') || 'Наличие должно быть 0 или 1'
+                ]
             }
         },
         computed: {
@@ -139,22 +197,33 @@
                 setDialogAddItem: 'dialogs/setAdd',
                 addTableItem: 'table/addItem'
             }),
+            resetValidation() {
+                this.$refs.form.resetValidation()
+            },
             close() {
+                this.resetValidation()
+                this.$refs.form.reset()
                 this.dialog = false
             },
             add() {
-                const data = {
-                    artnumber: this.artnumber,
-                    name: this.name,
-                    brand: this.brand,
-                    weight: this.weight,
-                    quantity: this.quantity,
-                    price: this.price,
-                    stock: this.stock
-                }
+                this.$refs.form.validate()
 
-                this.addTableItem(data)
-                this.close()
+                this.$nextTick(() => {
+                    if (this.valid) {
+                        const itemData = {
+                            artnumber: this.artnumber,
+                            name: this.name,
+                            brand: this.brand,
+                            weight: this.weight,
+                            quantity: this.quantity,
+                            price: this.price,
+                            stock: this.stock
+                        }
+
+                        this.addTableItem(itemData)
+                        this.close()
+                    }
+                })
             }
         }
     }
