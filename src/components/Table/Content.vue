@@ -40,6 +40,7 @@
       </template>
     </v-data-table>
     <edit-item-dialog />
+    <delete-item-dialog />
   </div>
 </template>
 
@@ -47,10 +48,12 @@
   import { mapState, mapActions } from 'vuex'
   import AddItemDialog from "./Dialogs/AddItem";
   import EditItemDialog from "./Dialogs/EditItem";
+  import DeleteItemDialog from "./Dialogs/DeleteItem";
 
   export default {
     name: 'TableContent',
     components: {
+        DeleteItemDialog,
         EditItemDialog,
         AddItemDialog
     },
@@ -104,7 +107,8 @@
       ...mapActions({
           setData: 'table/setData',
           setDialogAddItem: 'dialogs/setAdd',
-          setDialogEditItem: 'dialogs/setEdit'
+          setDialogEditItem: 'dialogs/setEdit',
+          setDialogDeleteItem: 'dialogs/setDelete'
       }),
       addItem() {
           this.setDialogAddItem(true)
@@ -120,8 +124,13 @@
           }
       },
       deleteItem(item) {
-        //  todo: open delete item dialog
-        console.log(item)
+          const deletedindex = this.data.indexOf(item)
+
+          if (deletedindex !== -1) {
+              this.setDialogDeleteItem({
+                  index: deletedindex
+              })
+          }
       }
     }
   }

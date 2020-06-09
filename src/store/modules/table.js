@@ -2,7 +2,8 @@ import tableData from '../../assets/data'
 import {
     SET_TABLE_DATA,
     ADD_TABLE_ITEM,
-    EDIT_TABLE_ITEM
+    EDIT_TABLE_ITEM,
+    DELETE_TABLE_ITEM
 } from '../mutation-types'
 
 const namespaced = true
@@ -20,6 +21,9 @@ const actions = {
     },
     editItem({ commit }, value) {
         commit(EDIT_TABLE_ITEM, value)
+    },
+    deleteItem({ commit }, index) {
+        commit(DELETE_TABLE_ITEM, index)
     }
 }
 
@@ -35,6 +39,9 @@ const mutations = {
         const data = value.data
 
         state.data.splice(index, 1, data)
+    },
+    [DELETE_TABLE_ITEM](state, index) {
+        state.data.splice(index, 1)
     }
 }
 
